@@ -1,0 +1,20 @@
+query getProposals($spaces: [String]) {
+  proposals(
+    where: {
+      space_in: $spaces,
+      state: "active"
+    },
+    orderBy: "created",
+    orderDirection: desc
+  ) {
+    id
+    title
+    choices
+    start
+    end
+    snapshot
+    state
+    author
+    votes
+  }
+}

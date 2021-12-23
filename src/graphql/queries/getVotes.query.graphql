@@ -1,0 +1,11 @@
+query getVotes($proposal_in: [String]) {
+  votes(first: 1000, where: { proposal_in: $proposal_in }) {
+    id
+    voter
+    created
+    choice
+    proposal {
+      id
+    }
+  }
+}
