@@ -1,16 +1,7 @@
 import useProposals from "../hooks/Proposals";
 import useScores from "../hooks/Scores";
 import { useMemo } from "react";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
+import Proposal from "./Proposal";
 
 export default function Chart({
   space,
@@ -69,52 +60,11 @@ export default function Chart({
     return <div>Loading...</div>;
   }
 
-  const CustomTooltip = ({
-    active,
-    payload,
-  }: {
-    active?: any;
-    payload?: any;
-  }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="custom-tooltip">
-          <p className="label">{`${payload[0].payload.title}`}</p>
-          <p className="label">{`${payload[0].payload.totalVotes} votes`}</p>
-        </div>
-      );
-    }
-
-    return null;
-  };
-
   return (
-    <ResponsiveContainer width="90%" height="70%">
-      <BarChart
-        width={500}
-        height={300}
-        data={chartData}
-        margin={{
-          top: 5,
-          right: 50,
-          left: 50,
-          bottom: 5,
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis
-          dataKey="titleShort"
-          angle={-45}
-          textAnchor="end"
-          interval={0}
-          offset={1000}
-        />
-        <YAxis label={{ value: "JBX", angle: -90 }} offset={100} />
-        <Tooltip content={<CustomTooltip />} />
-        <Legend verticalAlign="top" />
-        <Bar dataKey="yesVotesTokens" fill="#1E88E5" />
-        <Bar dataKey="noVotesTokens" fill="#D81B60" />
-      </BarChart>
-    </ResponsiveContainer>
+    <div>
+      {[chartData[0]].map((proposal: any, i: any) => (
+        <Proposal key={i} chartData={proposal} />
+      ))}
+    </div>
   );
 }
