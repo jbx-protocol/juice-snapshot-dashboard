@@ -1,10 +1,7 @@
 query getProposals($spaces: [String]) {
   proposals(
-    where: {
-      space_in: $spaces,
-      state: "active"
-    },
-    orderBy: "created",
+    where: { space_in: $spaces, state: "active" }
+    orderBy: "created"
     orderDirection: desc
   ) {
     id
@@ -14,7 +11,8 @@ query getProposals($spaces: [String]) {
     end
     snapshot
     state
-    author
-    votes
+    space {
+      name
+    }
   }
 }

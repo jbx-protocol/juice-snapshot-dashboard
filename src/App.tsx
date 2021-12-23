@@ -6,9 +6,13 @@ import Chart from "./components/Chart";
 function App() {
   return (
     <div className="App">
-      <header className="App-header">Snapshot</header>
+      <header>Snapshot</header>
       <main>
-        <Chart space="jbdao.eth" />
+        <Chart
+          space="jbdao.eth"
+          tokenSymbol="JBX"
+          tokenContractAddress="0x3abF2A4f8452cCC2CF7b4C1e4663147600646f66"
+        />
       </main>
     </div>
   );

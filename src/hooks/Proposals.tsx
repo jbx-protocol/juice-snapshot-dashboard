@@ -1,11 +1,12 @@
 import { useQuery } from "@apollo/client";
 import { loader } from "graphql.macro";
+import { useMemo } from "react";
 const getProposals = loader("../graphql/queries/getProposals.query.graphql");
 const getVotes = loader("../graphql/queries/getVotes.query.graphql");
 
-export default function useProposals(spaces: Array<string>) {
+export default function useProposals(space: string) {
   const { data: proposalsData } = useQuery(getProposals, {
-    variables: { spaces },
+    variables: { spaces: [space] },
   });
 
   const proposalIds = proposalsData?.proposals.map((p: any) => p.id);
@@ -15,26 +16,31 @@ export default function useProposals(spaces: Array<string>) {
     },
     skip: !Boolean(proposalIds),
   });
+  const votesByProposal = useMemo(() => {
+    return votesData?.votes.reduce(
+      (proposals: { [key: string]: Array<any> }, vote: any) => {
+        const proposalId = vote.proposal.id;
+        if (!proposals[proposalId]) {
+          proposals[proposalId] = [vote];
+        } else {
+          proposals[proposalId].push(vote);
+        }
 
-  const votesByProposal = votesData?.votes.reduce(
-    (proposals: { [key: string]: Array<any> }, vote: any) => {
-      const proposalId = vote.proposal.id;
-      if (!proposals[proposalId]) {
-        proposals[proposalId] = [vote];
-      } else {
-        proposals[proposalId].push(vote);
-      }
+        return proposals;
+      },
+      {}
+    );
+  }, [votesData]);
 
-      return proposals;
-    },
-    {}
-  );
+  if (!votesByProposal) return;
 
-  return proposalsData?.proposals.map((p: any) => {
+  const proposals = proposalsData?.proposals.map((p: any) => {
     return {
       ...p,
       votesCount: p.votes,
-      votes: votesByProposal?.[p.id],
+      votes: votesByProposal[p.id],
     };
   });
+
+  return proposals;
 }
