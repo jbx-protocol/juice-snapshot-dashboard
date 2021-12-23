@@ -11,7 +11,7 @@ function App() {
         <Chart
           space="jbdao.eth"
           tokenSymbol="JBX"
-          tokenContractAddress="0x3abF2A4f8452cCC2CF7b4C1e4663147600646f66"
+          tokenContractAddress="0xee2eBCcB7CDb34a8A822b589F9E8427C24351bfc"
         />
       </main>
     </div>

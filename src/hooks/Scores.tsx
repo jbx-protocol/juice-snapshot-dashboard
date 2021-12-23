@@ -15,13 +15,34 @@ const getScores = ({
   votes: any[];
   snapshotBlockNumber: string;
 }) => {
+  //   const strategies = [
+  //     {
+  //       name: "erc20-balance-of",
+  //       params: {
+  //         address: tokenContractAddress,
+  //         symbol: tokenSymbol,
+  //         decimals: 18,
+  //       },
+  //     },
+  //   ];
   const strategies = [
     {
-      name: "erc20-balance-of",
+      name: "contract-call",
       params: {
-        address: tokenContractAddress,
+        args: ["%{address}", "0x01"],
         symbol: tokenSymbol,
+        address: tokenContractAddress,
         decimals: 18,
+        methodABI: {
+          name: "balanceOf",
+          type: "function",
+          inputs: [
+            { name: "", type: "address", internalType: "address" },
+            { name: "", type: "uint256", internalType: "uint256" },
+          ],
+          outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
+          stateMutability: "view",
+        },
       },
     },
   ];
@@ -46,7 +67,6 @@ export default function useScores({
   tokenSymbol: string;
   proposals?: any;
 }) {
-  const cache = useRef<{ [key: string]: any }>({});
   const [data, setData] = useState<string>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
@@ -58,18 +78,12 @@ export default function useScores({
 
     Promise.all(
       proposals?.map((p: any) => {
-        if (cache.current[p.space.name]) {
-          return cache.current[p.space.name];
-        }
         return getScores({
           space: p.space.name,
           tokenContractAddress,
           tokenSymbol,
           snapshotBlockNumber: p.snapshot,
           votes: p.votes,
-        }).then((d) => {
-          cache.current[p.space.name] = d;
-          return d;
         });
       })
     )

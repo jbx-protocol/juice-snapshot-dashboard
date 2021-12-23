@@ -54,6 +54,7 @@ export default function Chart({
         titleShort: p.title.split(" - ")[0],
         title: p.title,
         id: p.id,
+        totalVotes: p.votes.length,
         yesVotes,
         noVotes,
         abstainVotes,
@@ -79,6 +80,7 @@ export default function Chart({
       return (
         <div className="custom-tooltip">
           <p className="label">{`${payload[0].payload.title}`}</p>
+          <p className="label">{`${payload[0].payload.totalVotes} votes`}</p>
         </div>
       );
     }
