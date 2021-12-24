@@ -1,6 +1,6 @@
 import "./App.css";
-import ProposalsChart from "./components/ProposalsChart";
-import logo from "./assets/logo.png"; // Tell webpack this JS file uses this image
+import Proposals from "./components/Proposals";
+import logo from "./assets/logo.png";
 
 function App() {
   return (
@@ -12,19 +12,16 @@ function App() {
       </header>
       <main>
         <h1>JuiceboxDAO active proposals</h1>
-        <div style={{ width: "80%", height: "80%", margin: "0 auto" }}>
-          <ProposalsChart
-            space="jbdao.eth"
-            tokenSymbol="JBX"
-            tokenContractAddress="0xee2eBCcB7CDb34a8A822b589F9E8427C24351bfc"
-            voteThreshold={8}
-            tokenVoteThresholdPercent={0.66}
-          />
-        </div>
+
+        <Proposals
+          space="jbdao.eth"
+          tokenSymbol="JBX"
+          tokenContractAddress="0xee2eBCcB7CDb34a8A822b589F9E8427C24351bfc"
+          voteThreshold={8}
+          tokenVoteThresholdPercent={0.66}
+        />
       </main>
-      <footer>
-        <a href="https://snapshot.org/#/jbdao.eth">Snapshot</a>
-      </footer>
+      <footer></footer>
     </div>
   );
 }
