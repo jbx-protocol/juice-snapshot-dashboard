@@ -2,6 +2,8 @@
 
 📊 Visualize proposals on snapshot.org.
 
+👉 https://aeolianeth.github.io/snapshot-analytics
+
 ![demo](public/assets/demo.png)
 
 ## Overview
