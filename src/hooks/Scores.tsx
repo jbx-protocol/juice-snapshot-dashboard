@@ -1,5 +1,5 @@
 import snapshot from "@snapshot-labs/snapshot.js";
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { useDeepCompareEffect } from "react-use";
 
 const getScores = ({
