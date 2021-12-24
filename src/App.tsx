@@ -17,7 +17,8 @@ function App() {
             space="jbdao.eth"
             tokenSymbol="JBX"
             tokenContractAddress="0xee2eBCcB7CDb34a8A822b589F9E8427C24351bfc"
-            voteThreshold={15}
+            voteThreshold={8}
+            tokenVoteThresholdPercent={0.66}
           />
         </div>
       </main>

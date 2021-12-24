@@ -25,11 +25,13 @@ export default function ProposalsChart({
   tokenContractAddress,
   tokenSymbol,
   voteThreshold,
+  tokenVoteThresholdPercent,
 }: {
   space: string;
   tokenContractAddress: string;
   tokenSymbol: string;
   voteThreshold?: number;
+  tokenVoteThresholdPercent?: number;
 }) {
   const proposals = useProposals(space);
   const { data: scores } = useScores({
@@ -46,13 +48,13 @@ export default function ProposalsChart({
       const yesVotes = p.votes.filter((p: any) => p.choice === 1);
       const noVotes = p.votes.filter((p: any) => p.choice === 2);
       const abstainVotes = p.votes.filter((p: any) => p.choice === 3);
-      const yesVotesTokens = yesVotes.reduce((sum: number, vote: any) => {
+      const yesTokenVotes = yesVotes.reduce((sum: number, vote: any) => {
         return sum + scores[p.id][vote.voter];
       }, 0);
-      const noVotesTokens = noVotes.reduce((sum: number, vote: any) => {
+      const noTokenVotes = noVotes.reduce((sum: number, vote: any) => {
         return sum + scores[p.id][vote.voter];
       }, 0);
-      const abstainVotesTokens = abstainVotes.reduce(
+      const abstainTokenVotes = abstainVotes.reduce(
         (sum: number, vote: any) => {
           return sum + scores[p.id][vote.voter];
         },
@@ -68,9 +70,10 @@ export default function ProposalsChart({
         yesVotes,
         noVotes,
         abstainVotes,
-        yesVotesTokens,
-        noVotesTokens,
-        abstainVotesTokens,
+        yesTokenVotes,
+        noTokenVotes,
+        abstainTokenVotes,
+        totalTokenVotes: yesTokenVotes + noTokenVotes + abstainTokenVotes,
       };
     });
   }, [proposals, scores]);
@@ -92,6 +95,20 @@ export default function ProposalsChart({
         <div className="custom-tooltip">
           <p className="label">{`${proposal.title}`}</p>
           <p className="label">{`${proposal.totalVotes} votes (${proposal.yesVotes.length} yes, ${proposal.noVotes.length} no, ${proposal.abstainVotes.length} abstain)`}</p>
+          {voteThreshold && proposal.totalVotes < voteThreshold && (
+            <p style={{ color: "#FF6347" }}>
+              Proposal needs at least {voteThreshold} votes.
+            </p>
+          )}
+
+          {tokenVoteThresholdPercent &&
+            proposal.yesTokenVotes / proposal.totalTokenVotes <
+              tokenVoteThresholdPercent && (
+              <p style={{ color: "#FF6347" }}>
+                Proposal needs more than {tokenVoteThresholdPercent * 100}%
+                "Yes" votes.
+              </p>
+            )}
         </div>
       );
     }
@@ -131,7 +148,7 @@ export default function ProposalsChart({
         <Bar
           yAxisId="left"
           stackId="a"
-          dataKey="yesVotesTokens"
+          dataKey="yesTokenVotes"
           name={`Yes (${tokenSymbol})`}
           fill="#18b4c7"
           barSize={20}
@@ -139,7 +156,7 @@ export default function ProposalsChart({
         <Bar
           yAxisId="left"
           stackId="a"
-          dataKey="noVotesTokens"
+          dataKey="noTokenVotes"
           name={`No (${tokenSymbol})`}
           fill="#FF6347"
           barSize={20}
@@ -148,7 +165,7 @@ export default function ProposalsChart({
           yAxisId="left"
           stackId="a"
           name={`Abstain (${tokenSymbol})`}
-          dataKey="abstainVotesTokens"
+          dataKey="abstainTokenVotes"
           fill="#f5a312"
           barSize={20}
         />
