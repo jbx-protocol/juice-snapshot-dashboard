@@ -105,8 +105,8 @@ export default function ProposalsChart({
         height={300}
         data={chartData}
         margin={{
-          top: 50,
-          right: 100,
+          top: 10,
+          right: 50,
           left: 50,
           bottom: 30,
         }}

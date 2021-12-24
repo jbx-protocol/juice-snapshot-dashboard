@@ -3,11 +3,5 @@ body {
   font-family: "DM Mono", monospace;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #fbf9f5
-}
-
-.custom-tooltip {
-  background: white;
-  padding: 0.5rem;
-  box-shadow: 10px 10px #888888;
+  background: #fbf9f5;
 }

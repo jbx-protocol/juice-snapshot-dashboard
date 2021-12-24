@@ -1,3 +1,8 @@
+.App {
+  height: 100vh;
+  width: 100vw;
+}
+
 header {
   height: 64px;
   padding: 0 50px;
@@ -5,10 +10,18 @@ header {
   align-items: center;
 }
 
+footer {
+  text-align: center;
+  height: 100px;
+}
+
 main {
-  height: calc(100vh - 64px);
-  width: 100vw;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  height: calc(100% - 64px - 100px - 40px);
+  text-align: center;
+}
+
+.custom-tooltip {
+  background: rgb(243, 241, 236);
+  padding: 0.5rem;
+  box-shadow: rgb(231 227 220) 10px 10px;
 }

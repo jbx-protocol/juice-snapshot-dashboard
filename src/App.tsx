@@ -5,10 +5,13 @@ function App() {
   return (
     <div className="App">
       <header>
-        <img height={40} src="/assets/logo.png" alt="Juicebox logo" />
+        <a href="https://juicebox.money" rel="noopener noreferrer">
+          <img height={40} src="/assets/logo.png" alt="Juicebox logo" />
+        </a>
       </header>
       <main>
-        <div style={{ width: "80%", height: "80%" }}>
+        <h1>JuiceboxDAO active proposals</h1>
+        <div style={{ width: "80%", height: "80%", margin: '0 auto' }}>
           <ProposalsChart
             space="jbdao.eth"
             tokenSymbol="JBX"
@@ -17,6 +20,9 @@ function App() {
           />
         </div>
       </main>
+      <footer>
+        <a href="https://snapshot.org/#/jbdao.eth">Snapshot</a>
+      </footer>
     </div>
   );
 }
