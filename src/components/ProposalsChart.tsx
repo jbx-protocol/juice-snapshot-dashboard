@@ -76,7 +76,7 @@ export default function ProposalsChart({
   }, [proposals, scores]);
 
   if (!chartData) {
-    return <div>Loading...</div>;
+    return <div>Loading (may take up to 30 seconds)...</div>;
   }
 
   const CustomTooltip = ({
@@ -87,10 +87,11 @@ export default function ProposalsChart({
     payload?: any;
   }) => {
     if (active && payload && payload.length) {
+      const proposal = payload[0].payload;
       return (
         <div className="custom-tooltip">
-          <p className="label">{`${payload[0].payload.title}`}</p>
-          <p className="label">{`${payload[0].payload.totalVotes} votes`}</p>
+          <p className="label">{`${proposal.title}`}</p>
+          <p className="label">{`${proposal.totalVotes} votes (${proposal.yesVotes.length} yes, ${proposal.noVotes.length} no, ${proposal.abstainVotes.length} abstain)`}</p>
         </div>
       );
     }
