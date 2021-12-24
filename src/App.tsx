@@ -1,22 +1,21 @@
 import "./App.css";
-import Chart from "./components/Chart";
-import AllProposalsChart from "./components/AllProposalsChart";
+import ProposalsChart from "./components/ProposalsChart";
 
 function App() {
   return (
     <div className="App">
-      <header>Snapshot</header>
+      <header>
+        <img height={40} src="/assets/logo.png" alt="Juicebox logo" />
+      </header>
       <main>
-        {/* <Chart
-          space="jbdao.eth"
-          tokenSymbol="JBX"
-          tokenContractAddress="0xee2eBCcB7CDb34a8A822b589F9E8427C24351bfc"
-        /> */}
-        <AllProposalsChart
-          space="jbdao.eth"
-          tokenSymbol="JBX"
-          tokenContractAddress="0xee2eBCcB7CDb34a8A822b589F9E8427C24351bfc"
-        />
+        <div style={{ width: "80%", height: "80%" }}>
+          <ProposalsChart
+            space="jbdao.eth"
+            tokenSymbol="JBX"
+            tokenContractAddress="0xee2eBCcB7CDb34a8A822b589F9E8427C24351bfc"
+            voteThreshold={15}
+          />
+        </div>
       </main>
     </div>
   );

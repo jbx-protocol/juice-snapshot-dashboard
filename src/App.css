@@ -1,9 +1,12 @@
 header {
-  height: 40px;
+  height: 64px;
+  padding: 0 50px;
+  display: flex;
+  align-items: center;
 }
 
 main {
-  height: calc(100vh - 40px);
+  height: calc(100vh - 64px);
   width: 100vw;
   display: flex;
   align-items: center;

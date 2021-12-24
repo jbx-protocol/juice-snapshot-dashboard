@@ -1,6 +1,8 @@
 import useProposals from "../hooks/Proposals";
 import useScores from "../hooks/Scores";
 import { useMemo } from "react";
+import numeral from "numeral";
+
 import {
   BarChart,
   Bar,
@@ -14,14 +16,20 @@ import {
   Label,
 } from "recharts";
 
-export default function AllProposalsChart({
+const formatJBX = (tickItem: string) => {
+  return numeral(tickItem).format("0,0a");
+};
+
+export default function ProposalsChart({
   space,
   tokenContractAddress,
   tokenSymbol,
+  voteThreshold,
 }: {
   space: string;
   tokenContractAddress: string;
   tokenSymbol: string;
+  voteThreshold?: number;
 }) {
   const proposals = useProposals(space);
   const { data: scores } = useScores({
@@ -91,13 +99,13 @@ export default function AllProposalsChart({
   };
 
   return (
-    <ResponsiveContainer width="90%" height="70%">
+    <ResponsiveContainer width="100%" height="100%">
       <BarChart
         width={500}
         height={300}
         data={chartData}
         margin={{
-          top: 5,
+          top: 50,
           right: 100,
           left: 50,
           bottom: 30,
@@ -105,14 +113,17 @@ export default function AllProposalsChart({
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="titleShort" angle={-45} textAnchor="end" interval={0} />
-        <YAxis yAxisId="left" orientation="left">
-          {" "}
+        <YAxis yAxisId="left" orientation="left" tickFormatter={formatJBX}>
           <Label angle={270} position="left" style={{ textAnchor: "middle" }}>
-            Vertical Label!
+            {tokenSymbol}
           </Label>
         </YAxis>
 
-        <YAxis yAxisId="right" orientation="right" label="Votes" interval={0} />
+        <YAxis yAxisId="right" orientation="right" interval={0}>
+          <Label angle={90} position="right" style={{ textAnchor: "middle" }}>
+            Votes
+          </Label>
+        </YAxis>
 
         <Tooltip content={<CustomTooltip />} />
         <Legend verticalAlign="top" />
@@ -120,7 +131,7 @@ export default function AllProposalsChart({
           yAxisId="left"
           stackId="a"
           dataKey="yesVotesTokens"
-          label="Yes (JBX)"
+          name={`Yes (${tokenSymbol})`}
           fill="#18b4c7"
           barSize={20}
         />
@@ -128,14 +139,14 @@ export default function AllProposalsChart({
           yAxisId="left"
           stackId="a"
           dataKey="noVotesTokens"
-          label="No (JBX)"
+          name={`No (${tokenSymbol})`}
           fill="#FF6347"
           barSize={20}
         />
         <Bar
           yAxisId="left"
           stackId="a"
-          label="Abstain (JBX)"
+          name={`Abstain (${tokenSymbol})`}
           dataKey="abstainVotesTokens"
           fill="#f5a312"
           barSize={20}
@@ -145,10 +156,13 @@ export default function AllProposalsChart({
           yAxisId="right"
           stackId="b"
           dataKey="totalVotes"
+          name="Total votes"
           fill="#574c67"
           barSize={5}
         />
-        <ReferenceLine yAxisId="right" y={14} stroke="#574c67" />
+        {voteThreshold && (
+          <ReferenceLine yAxisId="right" y={voteThreshold} stroke="#574c67" />
+        )}
       </BarChart>
     </ResponsiveContainer>
   );
