@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/snapshot-analytics/static/css/main.a962882f.css",
-    "main.js": "/snapshot-analytics/static/js/main.f4ab99e4.js",
+    "main.js": "/snapshot-analytics/static/js/main.dc5950dc.js",
     "static/js/787.1f6495fa.chunk.js": "/snapshot-analytics/static/js/787.1f6495fa.chunk.js",
     "index.html": "/snapshot-analytics/index.html",
     "main.a962882f.css.map": "/snapshot-analytics/static/css/main.a962882f.css.map",
-    "main.f4ab99e4.js.map": "/snapshot-analytics/static/js/main.f4ab99e4.js.map",
+    "main.dc5950dc.js.map": "/snapshot-analytics/static/js/main.dc5950dc.js.map",
     "787.1f6495fa.chunk.js.map": "/snapshot-analytics/static/js/787.1f6495fa.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.a962882f.css",
-    "static/js/main.f4ab99e4.js"
+    "static/js/main.dc5950dc.js"
   ]
 }
