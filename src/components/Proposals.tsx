@@ -71,17 +71,39 @@ export default function Proposals({
   }
 
   return (
-    <div style={{ width: "80%", height: "80%", margin: "0 auto" }}>
+    <div
+      style={{
+        width: "80%",
+        height: "80%",
+        margin: "0 auto",
+      }}
+    >
       {fundingCycleEndTimer && <h3>{fundingCycleEndTimer}</h3>}
 
       <a href={`https://snapshot.org/#/${space}`}>Snapshot</a>
 
-      <ProposalsChart
-        chartData={chartData}
-        voteThreshold={voteThreshold}
-        tokenVoteThresholdPercent={tokenVoteThresholdPercent}
-        tokenSymbol={tokenSymbol}
-      />
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          overflow: "scroll",
+        }}
+      >
+        <div
+          style={{
+            width: "100%",
+            height: "100%",
+            minWidth: "500px",
+          }}
+        >
+          <ProposalsChart
+            chartData={chartData}
+            voteThreshold={voteThreshold}
+            tokenVoteThresholdPercent={tokenVoteThresholdPercent}
+            tokenSymbol={tokenSymbol}
+          />
+        </div>
+      </div>
     </div>
   );
 }
