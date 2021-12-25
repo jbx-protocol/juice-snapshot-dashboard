@@ -4,12 +4,17 @@ import { useMemo } from "react";
 const getProposals = loader("../graphql/queries/getProposals.query.graphql");
 const getVotes = loader("../graphql/queries/getVotes.query.graphql");
 
-export default function useProposals(space: string) {
+type Proposal = any;
+type ExtendedProposal = any;
+
+export default function useProposals(
+  space: string
+): ExtendedProposal[] | undefined {
   const { data: proposalsData } = useQuery(getProposals, {
     variables: { spaces: [space] },
   });
 
-  const proposalIds = proposalsData?.proposals.map((p: any) => p.id);
+  const proposalIds = proposalsData?.proposals.map((p: Proposal) => p.id);
   const { data: votesData } = useQuery(getVotes, {
     variables: {
       proposal_in: proposalIds,

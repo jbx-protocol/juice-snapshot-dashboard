@@ -5,27 +5,35 @@ import ProposalsChart from "./ProposalsChart";
 import useCountdownTimer from "../hooks/CountdownTimer";
 
 export default function Proposals({
+  name,
   space,
   tokenContractAddress,
   tokenSymbol,
   voteThreshold,
   tokenVoteThresholdPercent,
+  juiceboxLink,
 }: {
+  name: string;
   space: string;
   tokenContractAddress: string;
   tokenSymbol: string;
   voteThreshold?: number;
   tokenVoteThresholdPercent?: number;
+  juiceboxLink?: string;
 }) {
   const proposals = useProposals(space);
-  const { data: scores } = useScores({
+  const { data: scores, loading: scoresLoading } = useScores({
     tokenContractAddress,
     tokenSymbol,
     proposals: proposals ?? [],
   });
 
   const chartData = useMemo(() => {
-    if (!proposals || !scores || Object.keys(scores || {}).length === 0) {
+    if (
+      proposals === undefined ||
+      !scores ||
+      Object.keys(scores || {}).length === 0
+    ) {
       return;
     }
     return proposals.map((p: any, i: any) => {
@@ -64,11 +72,18 @@ export default function Proposals({
 
   // use first proposal as timer reference.
   // Each active proposal should (in theory) have the same end time.
-  const fundingCycleEndTimer = useCountdownTimer({ end: proposals?.[0].end });
+  const fundingCycleEndTimer = useCountdownTimer({ end: proposals?.[0]?.end });
 
-  if (!chartData) {
+  if (proposals === undefined || scoresLoading) {
     return <div>Loading (may take up to 30 seconds)...</div>;
   }
+
+  const hasProposals = proposals.length > 0;
+
+  const navItems = [
+    { text: "Snapshot", href: `https://snapshot.org/#/${space}` },
+    { text: "Juicebox", href: juiceboxLink },
+  ];
 
   return (
     <div
@@ -78,32 +93,57 @@ export default function Proposals({
         margin: "0 auto",
       }}
     >
-      {fundingCycleEndTimer && <h3>{fundingCycleEndTimer}</h3>}
-
-      <a href={`https://snapshot.org/#/${space}`}>Snapshot</a>
-
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          overflow: "scroll",
-        }}
-      >
+      <h1>{name} active proposals</h1>
+      <nav>
+        <ul
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {navItems.map((n, i) => (
+            <li key={n.text} style={{ listStyle: "none" }}>
+              <a href={n.href} target="_blank" rel="noopener noreferrer">
+                {n.text}
+              </a>
+              <span style={{ padding: "0 0.7rem" }}>
+                {i < navItems.length - 1 && "•"}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </nav>
+      {!hasProposals && (
+        <p>
+          There are no active proposals. Check again in the next voting period.
+        </p>
+      )}
+      {hasProposals && fundingCycleEndTimer && <h3>{fundingCycleEndTimer}</h3>}
+      {hasProposals && (
         <div
           style={{
             width: "100%",
             height: "100%",
-            minWidth: "500px",
+            overflow: "scroll",
           }}
         >
-          <ProposalsChart
-            chartData={chartData}
-            voteThreshold={voteThreshold}
-            tokenVoteThresholdPercent={tokenVoteThresholdPercent}
-            tokenSymbol={tokenSymbol}
-          />
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              minWidth: "500px",
+            }}
+          >
+            <ProposalsChart
+              chartData={chartData}
+              voteThreshold={voteThreshold}
+              tokenVoteThresholdPercent={tokenVoteThresholdPercent}
+              tokenSymbol={tokenSymbol}
+            />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

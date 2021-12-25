@@ -11,12 +11,12 @@ function App() {
         </a>
       </header>
       <main>
-        <h1>JuiceboxDAO active proposals</h1>
-
         <Proposals
+          name="JuiceboxDAO"
           space="jbdao.eth"
           tokenSymbol="JBX"
           tokenContractAddress="0xee2eBCcB7CDb34a8A822b589F9E8427C24351bfc"
+          juiceboxLink="https://juicebox.money/#/p/juicebox"
           voteThreshold={8}
           tokenVoteThresholdPercent={0.66}
         />

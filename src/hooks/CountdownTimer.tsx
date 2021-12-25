@@ -23,8 +23,9 @@ export default function useCountdownTimer({ end }: { end?: number } = {}) {
   const [delta, setDelta] = useState<number>();
 
   useEffect(() => {
+    if (!end) return;
+
     const interval = setInterval(() => {
-      if (!end) return;
       const _delta = Math.abs(end * 1000 - Date.now()) / 1000;
       setDelta(_delta);
     }, 1000);
