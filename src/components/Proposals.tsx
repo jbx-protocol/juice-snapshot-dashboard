@@ -3,6 +3,7 @@ import useScores from "../hooks/Scores";
 import { useMemo } from "react";
 import ProposalsChart from "./ProposalsChart";
 import useCountdownTimer from "../hooks/CountdownTimer";
+import blueberry from "../assets/blueberry.png";
 
 export default function Proposals({
   name,
@@ -74,11 +75,9 @@ export default function Proposals({
   // Each active proposal should (in theory) have the same end time.
   const fundingCycleEndTimer = useCountdownTimer({ end: proposals?.[0]?.end });
 
-  if (proposals === undefined || scoresLoading) {
-    return <div>Loading (may take up to 30 seconds)...</div>;
-  }
+  const loading = proposals === undefined || scoresLoading;
 
-  const hasProposals = proposals.length > 0;
+  const hasProposals = !loading && proposals?.length > 0;
 
   const navItems = [
     { text: "Snapshot", href: `https://snapshot.org/#/${space}` },
@@ -114,13 +113,23 @@ export default function Proposals({
           ))}
         </ul>
       </nav>
-      {!hasProposals && (
-        <p>
-          There are no active proposals. Check again in the next voting period.
-        </p>
+
+      {loading && <div>Loading (may take up to 30 seconds)...</div>}
+      {!loading && !hasProposals && (
+        <div>
+          <img
+            src={blueberry}
+            alt="Blueberry"
+            style={{ maxWidth: "400px", width: "100%", height: "auto" }}
+          />
+          <p>There are no active proposals.</p>
+          <p>Check again in the next voting period.</p>
+        </div>
       )}
-      {hasProposals && fundingCycleEndTimer && <h3>{fundingCycleEndTimer}</h3>}
-      {hasProposals && (
+      {!loading && hasProposals && fundingCycleEndTimer && (
+        <h3>{fundingCycleEndTimer}</h3>
+      )}
+      {!loading && hasProposals && (
         <div
           style={{
             width: "100%",
