@@ -13,6 +13,7 @@ export default function Proposals({
   voteThreshold,
   tokenVoteThresholdPercent,
   juiceboxLink,
+  governanceProcessLink,
 }: {
   name: string;
   space: string;
@@ -21,6 +22,7 @@ export default function Proposals({
   voteThreshold?: number;
   tokenVoteThresholdPercent?: number;
   juiceboxLink?: string;
+  governanceProcessLink?: string;
 }) {
   const proposals = useProposals(space);
   const { data: scores, loading: scoresLoading } = useScores({
@@ -81,8 +83,14 @@ export default function Proposals({
 
   const navItems = [
     { text: "Snapshot", href: `https://snapshot.org/#/${space}` },
-    { text: "Juicebox", href: juiceboxLink },
-  ];
+    juiceboxLink ? { text: "Juicebox", href: juiceboxLink } : undefined,
+    governanceProcessLink
+      ? {
+          text: "Governance process",
+          href: governanceProcessLink,
+        }
+      : undefined,
+  ].filter((n): n is any => n !== undefined);
 
   return (
     <div
@@ -114,16 +122,32 @@ export default function Proposals({
         </ul>
       </nav>
 
-      {loading && <div>Loading (may take up to 30 seconds)...</div>}
+      {loading && (
+        <div style={{ marginTop: "5rem" }}>
+          <p style={{ marginBottom: "0.25rem" }}>Loading...</p>
+          <small>May take up to 30 seconds</small>
+        </div>
+      )}
       {!loading && !hasProposals && (
         <div>
           <img
             src={blueberry}
             alt="Blueberry"
-            style={{ maxWidth: "400px", width: "100%", height: "auto" }}
+            style={{ maxWidth: "300px", width: "100%", height: "auto" }}
           />
-          <p>There are no active proposals.</p>
-          <p>Check again in the next voting period.</p>
+          <h3>There are no active proposals.</h3>
+          <p>
+            Come back when the next voting period starts.{" "}
+            {governanceProcessLink && (
+              <a
+                href={governanceProcessLink}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Learn more.
+              </a>
+            )}
+          </p>
         </div>
       )}
       {!loading && hasProposals && fundingCycleEndTimer && (
