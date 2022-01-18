@@ -30,6 +30,10 @@ export default function ProposalsChart({
   if (!chartData) {
     return <div>Loading (may take up to 30 seconds)...</div>;
   }
+  const voteAxisUpperLimit = Math.max(
+    ...chartData.map((d: any) => d.totalVotes),
+    20
+  );
 
   const CustomTooltip = ({
     active,
@@ -43,7 +47,11 @@ export default function ProposalsChart({
       return (
         <div className="custom-tooltip">
           <p className="label">{`${proposal.title}`}</p>
-          <p className="label">{`${proposal.totalVotes} votes (${proposal.yesVotes.length} yes, ${proposal.noVotes.length} no, ${proposal.abstainVotes.length} abstain)`}</p>
+          <p className="label">{`${proposal.totalVotes} ${
+            proposal.totalVotes === 1 ? "vote" : "votes"
+          } (${proposal.yesVotes.length} yes, ${proposal.noVotes.length} no, ${
+            proposal.abstainVotes.length
+          } abstain)`}</p>
           {voteThreshold && proposal.totalVotes < voteThreshold && (
             <p style={{ color: "#FF6347" }}>
               Proposal needs at least {voteThreshold} votes.
@@ -90,7 +98,12 @@ export default function ProposalsChart({
           </Label>
         </YAxis>
 
-        <YAxis yAxisId="right" orientation="right" interval={0}>
+        <YAxis
+          yAxisId="right"
+          orientation="right"
+          interval={0}
+          domain={[0, voteAxisUpperLimit]}
+        >
           <Label angle={90} position="right" style={{ textAnchor: "middle" }}>
             Votes
           </Label>
