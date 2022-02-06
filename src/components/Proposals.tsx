@@ -102,7 +102,6 @@ export default function Proposals({
   const hasProposals = !loading && (proposals?.length ?? 0) > 0;
   const endTime = proposals?.[0]?.end;
   const isActive = proposals?.[0]?.state === "active";
-  console.log(proposalsLoading, scoresLoading, "loading");
 
   return (
     <div
@@ -118,8 +117,20 @@ export default function Proposals({
         juiceboxLink={juiceboxLink}
         governanceProcessLink={governanceProcessLink}
       />
-
-      <FundingCycleSelector space={space} onChange={(val) => setStart(val)} />
+      <div style={{ textAlign: "right" }}>
+        <div
+          style={{
+            display: "inline-flex",
+            flexDirection: "column",
+          }}
+        >
+          <FundingCycleSelector
+            id="funding-cycle-select"
+            space={space}
+            onChange={(val) => setStart(val)}
+          />
+        </div>
+      </div>
 
       {loading && (
         <div style={{ marginTop: "5rem" }}>
@@ -127,7 +138,7 @@ export default function Proposals({
           <small>May take up to 30 seconds</small>
         </div>
       )}
-      {!loading && !hasProposals && (
+      {!loading && !hasProposals && start && (
         <EmptyState governanceProcessLink={governanceProcessLink} />
       )}
       {!loading && hasProposals && endTime && isActive && (
