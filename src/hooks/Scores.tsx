@@ -67,9 +67,9 @@ export default function useScores({
   tokenSymbol: string;
   proposals?: any;
 }) {
-  const [data, setData] = useState<string>();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState();
+  const [data, setData] = useState<{ [k in string]: any }>();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error>();
 
   useDeepCompareEffect(() => {
     if (proposals === undefined) return;
@@ -98,7 +98,7 @@ export default function useScores({
 
         setData(scoresByProposal);
       })
-      .catch((e) => {
+      .catch((e: Error) => {
         setError(e);
       })
       .finally(() => {
