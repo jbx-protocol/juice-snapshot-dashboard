@@ -6,7 +6,22 @@ import Navbar from "./Navbar";
 import EmptyState from "./EmptyState";
 import FundingCycleTimer from "./FundingCycleTimer";
 import FundingCycleSelector from "./FundingCycleSelector";
-import { SnapshotProposalExtended, SnapshotScore } from "../models/Snapshot";
+import {
+  SnapshotProposalExtended,
+  SnapshotScore,
+  SnapshotVote,
+} from "../models/Snapshot";
+
+const sumVoteTokenVolume = (
+  votes: SnapshotVote[],
+  scores: { [proposalId: string]: SnapshotScore },
+  proposal: SnapshotProposalExtended
+) => {
+  return votes.reduce((sum: number, vote) => {
+    const proposalScores = scores[proposal.id];
+    return sum + proposalScores[vote.voter];
+  }, 0);
+};
 
 const getChartData = (
   proposals?: SnapshotProposalExtended[],
@@ -14,7 +29,7 @@ const getChartData = (
 ): ChartData | undefined => {
   if (
     proposals === undefined ||
-    !scores ||
+    scores === undefined ||
     Object.keys(scores || {}).length === 0
   ) {
     return;
@@ -24,15 +39,13 @@ const getChartData = (
     const yesVotes = proposal.votes.filter((vote) => vote.choice === 1);
     const noVotes = proposal.votes.filter((vote) => vote.choice === 2);
     const abstainVotes = proposal.votes.filter((vote) => vote.choice === 3);
-    const yesVoteTokenVolume = yesVotes.reduce((sum: number, vote) => {
-      return sum + scores[proposal.id][vote.voter];
-    }, 0);
-    const noVoteTokenVolume = noVotes.reduce((sum: number, vote) => {
-      return sum + scores[proposal.id][vote.voter];
-    }, 0);
-    const abstainVoteTokenVolume = abstainVotes.reduce((sum: number, vote) => {
-      return sum + scores[proposal.id][vote.voter];
-    }, 0);
+    const yesVoteTokenVolume = sumVoteTokenVolume(yesVotes, scores, proposal);
+    const noVoteTokenVolume = sumVoteTokenVolume(noVotes, scores, proposal);
+    const abstainVoteTokenVolume = sumVoteTokenVolume(
+      abstainVotes,
+      scores,
+      proposal
+    );
 
     return {
       idx,
@@ -84,6 +97,8 @@ export default function Proposals({
   });
 
   const chartData = getChartData(proposals, scores);
+
+  console.log(proposalsLoading, scoresLoading, "loading");
 
   const loading = proposalsLoading || scoresLoading;
   const hasProposals = !loading && (proposals?.length ?? 0) > 0;

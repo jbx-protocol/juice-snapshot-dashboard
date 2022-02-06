@@ -9,16 +9,16 @@ export type SnapshotVote = {
 };
 
 export type SnapshotProposal = {
-  choices: string[];
-  end: number;
   id: string;
+  title: string;
+  choices: string[];
+  start: number;
+  end: number;
   snapshot: string;
+  state: string;
   space: {
     name: string;
   };
-  start: number;
-  state: string;
-  title: string;
 };
 
 export type SnapshotProposalExtended = SnapshotProposal & {

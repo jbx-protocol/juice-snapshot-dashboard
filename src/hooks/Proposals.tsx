@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/client";
+import { NetworkStatus, useQuery } from "@apollo/client";
 import { loader } from "graphql.macro";
 import { SnapshotProposal, SnapshotVote } from "../models/Snapshot";
 const getProposals = loader("../graphql/queries/getProposals.query.graphql");
@@ -46,9 +46,11 @@ export function useProposals({
     data: proposalsData,
     error: proposalsError,
     loading: proposalsLoading,
+    networkStatus: proposalsNetworkStatus,
   } = useQuery<{ proposals: SnapshotProposal[] }>(getProposals, {
     variables: { spaces: [space], start, state, first: PROPOSALS_LIMIT },
     skip: !Boolean(start),
+    notifyOnNetworkStatusChange: true,
   });
 
   const proposalIds = proposalsData?.proposals.map((p) => p.id);
@@ -56,11 +58,13 @@ export function useProposals({
     data: votesData,
     error: votesError,
     loading: votesLoading,
+    networkStatus: votesNetworkStatus,
   } = useQuery<{ votes: SnapshotVote[] }>(getVotes, {
     variables: {
       proposal_in: proposalIds,
     },
     skip: !Boolean(proposalIds),
+    notifyOnNetworkStatusChange: true,
   });
 
   const votesByProposal = votesData?.votes.reduce(
@@ -94,6 +98,10 @@ export function useProposals({
   return {
     data: proposals,
     errors: [proposalsError, votesError],
-    loading: proposalsLoading || votesLoading,
+    loading:
+      proposalsLoading ||
+      votesLoading ||
+      proposalsNetworkStatus === NetworkStatus.refetch ||
+      votesNetworkStatus === NetworkStatus.refetch,
   };
 }

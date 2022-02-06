@@ -77,10 +77,12 @@ export default function useScores({
   const [error, setError] = useState<Error>();
 
   useDeepCompareEffect(() => {
-    if (proposals === undefined) return;
+    if (proposals === undefined) {
+      setData(undefined);
+      return;
+    }
 
     setLoading(true);
-
     Promise.all(
       proposals.map((proposal) => {
         return getScores({
@@ -110,7 +112,7 @@ export default function useScores({
       .finally(() => {
         setLoading(false);
       });
-  }, [proposals]);
+  }, [proposals ?? [], tokenContractAddress, tokenSymbol]);
 
   return { data, loading, error };
 }

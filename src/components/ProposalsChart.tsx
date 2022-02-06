@@ -134,7 +134,7 @@ export default function ProposalsChart({
         <Bar
           yAxisId="left"
           stackId="a"
-          dataKey="yesTokenVotes"
+          dataKey="yesVoteTokenVolume"
           name={`Yes (${tokenSymbol})`}
           fill="#18b4c7"
           barSize={20}
@@ -142,7 +142,7 @@ export default function ProposalsChart({
         <Bar
           yAxisId="left"
           stackId="a"
-          dataKey="noTokenVotes"
+          dataKey="noVoteTokenVolume"
           name={`No (${tokenSymbol})`}
           fill="#FF6347"
           barSize={20}
@@ -151,7 +151,7 @@ export default function ProposalsChart({
           yAxisId="left"
           stackId="a"
           name={`Abstain (${tokenSymbol})`}
-          dataKey="abstainTokenVotes"
+          dataKey="abstainVoteTokenVolume"
           fill="#f5a312"
           barSize={20}
         />
@@ -159,7 +159,7 @@ export default function ProposalsChart({
         <Bar
           yAxisId="right"
           stackId="b"
-          dataKey="totalVotes"
+          dataKey="totalVoteCount"
           name="Total votes"
           fill="#574c67"
           barSize={5}
