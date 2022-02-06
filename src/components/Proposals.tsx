@@ -1,9 +1,56 @@
-import useProposals from "../hooks/Proposals";
+import { useProposals } from "../hooks/Proposals";
 import useScores from "../hooks/Scores";
-import { useMemo } from "react";
-import ProposalsChart from "./ProposalsChart";
-import useCountdownTimer from "../hooks/CountdownTimer";
-import blueberry from "../assets/blueberry.png";
+import { useState } from "react";
+import ProposalsChart, { ChartData } from "./ProposalsChart";
+import Navbar from "./Navbar";
+import EmptyState from "./EmptyState";
+import FundingCycleTimer from "./FundingCycleTimer";
+import FundingCycleSelector from "./FundingCycleSelector";
+import { SnapshotProposalExtended, SnapshotScore } from "../models/Snapshot";
+
+const getChartData = (
+  proposals?: SnapshotProposalExtended[],
+  scores?: { [proposalId: string]: SnapshotScore }
+): ChartData | undefined => {
+  if (
+    proposals === undefined ||
+    !scores ||
+    Object.keys(scores || {}).length === 0
+  ) {
+    return;
+  }
+
+  return proposals.map((proposal, idx) => {
+    const yesVotes = proposal.votes.filter((vote) => vote.choice === 1);
+    const noVotes = proposal.votes.filter((vote) => vote.choice === 2);
+    const abstainVotes = proposal.votes.filter((vote) => vote.choice === 3);
+    const yesVoteTokenVolume = yesVotes.reduce((sum: number, vote) => {
+      return sum + scores[proposal.id][vote.voter];
+    }, 0);
+    const noVoteTokenVolume = noVotes.reduce((sum: number, vote) => {
+      return sum + scores[proposal.id][vote.voter];
+    }, 0);
+    const abstainVoteTokenVolume = abstainVotes.reduce((sum: number, vote) => {
+      return sum + scores[proposal.id][vote.voter];
+    }, 0);
+
+    return {
+      idx,
+      titleShort: proposal.title.split(" - ")[0],
+      title: proposal.title,
+      id: proposal.id,
+      totalVoteCount: proposal.votes.length,
+      yesVotes,
+      noVotes,
+      abstainVotes,
+      yesVoteTokenVolume,
+      noVoteTokenVolume,
+      abstainVoteTokenVolume,
+      totalVoteTokenVolume:
+        yesVoteTokenVolume + noVoteTokenVolume + abstainVoteTokenVolume,
+    };
+  });
+};
 
 export default function Proposals({
   name,
@@ -24,73 +71,24 @@ export default function Proposals({
   juiceboxLink?: string;
   governanceProcessLink?: string;
 }) {
-  const proposals = useProposals(space);
+  const [start, setStart] = useState<number>();
+  const { data: proposals, loading: proposalsLoading } = useProposals({
+    space,
+    start,
+  });
+
   const { data: scores, loading: scoresLoading } = useScores({
     tokenContractAddress,
     tokenSymbol,
-    proposals: proposals ?? [],
+    proposals,
   });
 
-  const chartData = useMemo(() => {
-    if (
-      proposals === undefined ||
-      !scores ||
-      Object.keys(scores || {}).length === 0
-    ) {
-      return;
-    }
-    return proposals.map((p: any, i: any) => {
-      const yesVotes = p.votes.filter((p: any) => p.choice === 1);
-      const noVotes = p.votes.filter((p: any) => p.choice === 2);
-      const abstainVotes = p.votes.filter((p: any) => p.choice === 3);
-      const yesTokenVotes = yesVotes.reduce((sum: number, vote: any) => {
-        return sum + scores[p.id][vote.voter];
-      }, 0);
-      const noTokenVotes = noVotes.reduce((sum: number, vote: any) => {
-        return sum + scores[p.id][vote.voter];
-      }, 0);
-      const abstainTokenVotes = abstainVotes.reduce(
-        (sum: number, vote: any) => {
-          return sum + scores[p.id][vote.voter];
-        },
-        0
-      );
+  const chartData = getChartData(proposals, scores);
 
-      return {
-        idx: i,
-        titleShort: p.title.split(" - ")[0],
-        title: p.title,
-        id: p.id,
-        totalVotes: p.votes.length,
-        yesVotes,
-        noVotes,
-        abstainVotes,
-        yesTokenVotes,
-        noTokenVotes,
-        abstainTokenVotes,
-        totalTokenVotes: yesTokenVotes + noTokenVotes + abstainTokenVotes,
-      };
-    });
-  }, [proposals, scores]);
-
-  // use first proposal as timer reference.
-  // Each active proposal should (in theory) have the same end time.
-  const fundingCycleEndTimer = useCountdownTimer({ end: proposals?.[0]?.end });
-
-  const loading = proposals === undefined || scoresLoading;
-
-  const hasProposals = !loading && proposals?.length > 0;
-
-  const navItems = [
-    { text: "Snapshot", href: `https://snapshot.org/#/${space}` },
-    juiceboxLink ? { text: "Juicebox", href: juiceboxLink } : undefined,
-    governanceProcessLink
-      ? {
-          text: "Governance process",
-          href: governanceProcessLink,
-        }
-      : undefined,
-  ].filter((n): n is any => n !== undefined);
+  const loading = proposalsLoading || scoresLoading;
+  const hasProposals = !loading && (proposals?.length ?? 0) > 0;
+  const endTime = proposals?.[0]?.end;
+  const isActive = proposals?.[0]?.state === "active";
 
   return (
     <div
@@ -101,26 +99,13 @@ export default function Proposals({
       }}
     >
       <h1>{name} active proposals</h1>
-      <nav>
-        <ul
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          {navItems.map((n, i) => (
-            <li key={n.text} style={{ listStyle: "none" }}>
-              <a href={n.href} target="_blank" rel="noopener noreferrer">
-                {n.text}
-              </a>
-              <span style={{ padding: "0 0.7rem" }}>
-                {i < navItems.length - 1 && "•"}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </nav>
+      <Navbar
+        space={space}
+        juiceboxLink={juiceboxLink}
+        governanceProcessLink={governanceProcessLink}
+      />
+
+      <FundingCycleSelector space={space} onChange={(val) => setStart(val)} />
 
       {loading && (
         <div style={{ marginTop: "5rem" }}>
@@ -129,29 +114,10 @@ export default function Proposals({
         </div>
       )}
       {!loading && !hasProposals && (
-        <div>
-          <img
-            src={blueberry}
-            alt="Blueberry"
-            style={{ maxWidth: "300px", width: "100%", height: "auto" }}
-          />
-          <h3>There are no active proposals.</h3>
-          <p>
-            Come back when the next voting period starts.{" "}
-            {governanceProcessLink && (
-              <a
-                href={governanceProcessLink}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Learn more.
-              </a>
-            )}
-          </p>
-        </div>
+        <EmptyState governanceProcessLink={governanceProcessLink} />
       )}
-      {!loading && hasProposals && fundingCycleEndTimer && (
-        <h3>{fundingCycleEndTimer}</h3>
+      {!loading && hasProposals && endTime && isActive && (
+        <FundingCycleTimer endTime={endTime} />
       )}
       {!loading && hasProposals && (
         <div

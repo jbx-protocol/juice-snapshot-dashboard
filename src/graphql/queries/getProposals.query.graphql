@@ -1,8 +1,9 @@
-query getProposals($spaces: [String]) {
+query getProposals($spaces: [String], $state: String, $first: Int, $start: Int) {
   proposals(
-    where: { space_in: $spaces, state: "active" }
+    where: { space_in: $spaces, state: $state, start: $start }
     orderBy: "created"
     orderDirection: desc
+    first: $first
   ) {
     id
     title

@@ -1,3 +1,8 @@
+type NavItem = {
+  text: string;
+  href: string;
+};
+
 export default function Navbar({
   space,
   juiceboxLink,
@@ -7,7 +12,7 @@ export default function Navbar({
   juiceboxLink?: string;
   governanceProcessLink?: string;
 }) {
-  const navItems = [
+  const navItems: NavItem[] = [
     { text: "Snapshot", href: `https://snapshot.org/#/${space}` },
     juiceboxLink ? { text: "Juicebox", href: juiceboxLink } : undefined,
     governanceProcessLink
@@ -16,7 +21,7 @@ export default function Navbar({
           href: governanceProcessLink,
         }
       : undefined,
-  ].filter((n): n is any => n !== undefined);
+  ].filter((n): n is NavItem => n !== undefined);
 
   return (
     <nav>
