@@ -98,12 +98,11 @@ export default function Proposals({
 
   const chartData = getChartData(proposals, scores);
 
-  console.log(proposalsLoading, scoresLoading, "loading");
-
   const loading = proposalsLoading || scoresLoading;
   const hasProposals = !loading && (proposals?.length ?? 0) > 0;
   const endTime = proposals?.[0]?.end;
   const isActive = proposals?.[0]?.state === "active";
+  console.log(proposalsLoading, scoresLoading, "loading");
 
   return (
     <div

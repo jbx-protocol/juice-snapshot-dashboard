@@ -28,6 +28,7 @@ export function useProposalGroups(space: string) {
     proposals: SnapshotProposal[];
   }>(getProposals, {
     variables: { spaces: [space], first: PROPOSALS_LIMIT },
+    notifyOnNetworkStatusChange: true,
   });
 
   return { data: groupProposalsByDate(proposalsData?.proposals), loading };
@@ -51,6 +52,7 @@ export function useProposals({
     variables: { spaces: [space], start, state, first: PROPOSALS_LIMIT },
     skip: !Boolean(start),
     notifyOnNetworkStatusChange: true,
+    fetchPolicy: "no-cache",
   });
 
   const proposalIds = proposalsData?.proposals.map((p) => p.id);
@@ -65,6 +67,7 @@ export function useProposals({
     },
     skip: !Boolean(proposalIds),
     notifyOnNetworkStatusChange: true,
+    fetchPolicy: "no-cache",
   });
 
   const votesByProposal = votesData?.votes.reduce(
@@ -80,10 +83,16 @@ export function useProposals({
     {}
   );
 
-  if (!votesByProposal) {
+  const loading =
+    proposalsLoading ||
+    votesLoading ||
+    proposalsNetworkStatus === NetworkStatus.refetch ||
+    votesNetworkStatus === NetworkStatus.refetch;
+
+  if (votesByProposal === undefined) {
     return {
       data: undefined,
-      loading: false,
+      loading,
       errors: [],
     };
   }
@@ -98,10 +107,6 @@ export function useProposals({
   return {
     data: proposals,
     errors: [proposalsError, votesError],
-    loading:
-      proposalsLoading ||
-      votesLoading ||
-      proposalsNetworkStatus === NetworkStatus.refetch ||
-      votesNetworkStatus === NetworkStatus.refetch,
+    loading,
   };
 }
