@@ -39,11 +39,13 @@ export default function ProposalsChart({
   chartData,
   voteThreshold,
   tokenVoteThresholdPercent,
+  onClick,
 }: {
   tokenSymbol: string;
   chartData?: ChartData;
   voteThreshold?: number;
   tokenVoteThresholdPercent?: number;
+  onClick: (proposalName: string) => void;
 }) {
   if (!chartData) {
     return <div>Loading (may take up to 30 seconds)...</div>;
@@ -109,6 +111,10 @@ export default function ProposalsChart({
           left: 20,
           bottom: 30,
         }}
+        onClick={(e: any) => {
+          onClick?.(e.activeLabel);
+        }}
+        style={{ cursor: "pointer" }}
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="titleShort" angle={-45} textAnchor="end" interval={0} />

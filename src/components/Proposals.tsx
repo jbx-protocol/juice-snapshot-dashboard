@@ -85,6 +85,8 @@ export default function Proposals({
   governanceProcessLink?: string;
 }) {
   const [start, setStart] = useState<number>();
+  const [selectedProposal, setSelectedProposal] =
+    useState<SnapshotProposalExtended>();
   const { data: proposals, loading: proposalsLoading } = useProposals({
     space,
     start,
@@ -111,13 +113,27 @@ export default function Proposals({
         margin: "0 auto",
       }}
     >
-      <h1>{name} active proposals</h1>
-      <Navbar
-        space={space}
-        juiceboxLink={juiceboxLink}
-        governanceProcessLink={governanceProcessLink}
-      />
-      <div style={{ textAlign: "right" }}>
+      <div style={{ marginBottom: "4rem" }}>
+        <h1>{name} active proposals</h1>
+        <Navbar
+          space={space}
+          juiceboxLink={juiceboxLink}
+          governanceProcessLink={governanceProcessLink}
+        />
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        {selectedProposal && (
+          <div>
+            <a
+              href={`https://snapshot.org/#/${space}/proposal/${selectedProposal.id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {selectedProposal.title}
+            </a>
+          </div>
+        )}
+
         <div
           style={{
             display: "inline-flex",
@@ -164,6 +180,15 @@ export default function Proposals({
               voteThreshold={voteThreshold}
               tokenVoteThresholdPercent={tokenVoteThresholdPercent}
               tokenSymbol={tokenSymbol}
+              onClick={(proposalName) => {
+                // TODO probably a safer way to do this
+                const proposal = proposals?.find((p) =>
+                  p.title.startsWith(proposalName)
+                );
+                if (proposal) {
+                  setSelectedProposal(proposal);
+                }
+              }}
             />
           </div>
         </div>
