@@ -122,8 +122,8 @@ export default function Proposals({
         />
       </div>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
-        {selectedProposal && (
-          <div>
+        <div>
+          {selectedProposal && (
             <a
               href={`https://snapshot.org/#/${space}/proposal/${selectedProposal.id}`}
               target="_blank"
@@ -131,8 +131,8 @@ export default function Proposals({
             >
               {selectedProposal.title}
             </a>
-          </div>
-        )}
+          )}
+        </div>
 
         <div
           style={{
