@@ -11,27 +11,47 @@ import {
   ReferenceLine,
   Label,
 } from "recharts";
+import { SnapshotVote } from "../models/Snapshot";
 
 const formatJBX = (tickItem: string) => {
   return numeral(tickItem).format("0,0a");
 };
 
+type ChartDataItem = {
+  idx: number;
+  titleShort: string;
+  title: string;
+  id: string;
+  totalVoteCount: number;
+  yesVotes: SnapshotVote[];
+  noVotes: SnapshotVote[];
+  abstainVotes: SnapshotVote[];
+  yesVoteTokenVolume: number;
+  noVoteTokenVolume: number;
+  abstainVoteTokenVolume: number;
+  totalVoteTokenVolume: number;
+};
+
+export type ChartData = ChartDataItem[];
+
 export default function ProposalsChart({
-  chartData,
   tokenSymbol,
+  chartData,
   voteThreshold,
   tokenVoteThresholdPercent,
+  onClick,
 }: {
-  chartData: any;
   tokenSymbol: string;
+  chartData?: ChartData;
   voteThreshold?: number;
   tokenVoteThresholdPercent?: number;
+  onClick: (proposalName: string) => void;
 }) {
   if (!chartData) {
     return <div>Loading (may take up to 30 seconds)...</div>;
   }
   const voteAxisUpperLimit = Math.max(
-    ...chartData.map((d: any) => d.totalVotes),
+    ...chartData.map((d) => d.totalVoteCount),
     20
   );
 
@@ -39,33 +59,35 @@ export default function ProposalsChart({
     active,
     payload,
   }: {
-    active?: any;
-    payload?: any;
+    active?: boolean;
+    payload?: { payload: ChartDataItem }[];
   }) => {
     if (active && payload && payload.length) {
       const proposal = payload[0].payload;
       return (
         <div className="custom-tooltip">
           <p className="label">{`${proposal.title}`}</p>
-          <p className="label">{`${proposal.totalVotes} ${
-            proposal.totalVotes === 1 ? "vote" : "votes"
+          <p className="label">{`${proposal.totalVoteCount} ${
+            proposal.totalVoteCount === 1 ? "vote" : "votes"
           } (${proposal.yesVotes.length} yes, ${proposal.noVotes.length} no, ${
             proposal.abstainVotes.length
           } abstain)`}</p>
-          {voteThreshold && proposal.totalVotes < voteThreshold && (
+          {voteThreshold && proposal.totalVoteCount < voteThreshold && (
             <p style={{ color: "#FF6347" }}>
               Proposal needs at least {voteThreshold} votes.
             </p>
           )}
 
           {tokenVoteThresholdPercent &&
-            proposal.yesTokenVotes / proposal.totalTokenVotes <
+            proposal.yesVoteTokenVolume / proposal.totalVoteTokenVolume <
               tokenVoteThresholdPercent && (
               <p style={{ color: "#FF6347" }}>
                 Proposal needs more than {tokenVoteThresholdPercent * 100}%
                 "Yes" votes (currently has{" "}
                 {Math.round(
-                  (proposal.yesTokenVotes / proposal.totalTokenVotes) * 100
+                  (proposal.yesVoteTokenVolume /
+                    proposal.totalVoteTokenVolume) *
+                    100
                 )}
                 %).
               </p>
@@ -89,6 +111,10 @@ export default function ProposalsChart({
           left: 20,
           bottom: 30,
         }}
+        onClick={(e: any) => {
+          onClick?.(e.activeLabel);
+        }}
+        style={{ cursor: "pointer" }}
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="titleShort" angle={-45} textAnchor="end" interval={0} />
@@ -114,7 +140,7 @@ export default function ProposalsChart({
         <Bar
           yAxisId="left"
           stackId="a"
-          dataKey="yesTokenVotes"
+          dataKey="yesVoteTokenVolume"
           name={`Yes (${tokenSymbol})`}
           fill="#18b4c7"
           barSize={20}
@@ -122,7 +148,7 @@ export default function ProposalsChart({
         <Bar
           yAxisId="left"
           stackId="a"
-          dataKey="noTokenVotes"
+          dataKey="noVoteTokenVolume"
           name={`No (${tokenSymbol})`}
           fill="#FF6347"
           barSize={20}
@@ -131,7 +157,7 @@ export default function ProposalsChart({
           yAxisId="left"
           stackId="a"
           name={`Abstain (${tokenSymbol})`}
-          dataKey="abstainTokenVotes"
+          dataKey="abstainVoteTokenVolume"
           fill="#f5a312"
           barSize={20}
         />
@@ -139,7 +165,7 @@ export default function ProposalsChart({
         <Bar
           yAxisId="right"
           stackId="b"
-          dataKey="totalVotes"
+          dataKey="totalVoteCount"
           name="Total votes"
           fill="#574c67"
           barSize={5}

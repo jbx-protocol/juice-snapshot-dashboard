@@ -1,6 +1,11 @@
 import snapshot from "@snapshot-labs/snapshot.js";
 import { useState } from "react";
 import { useDeepCompareEffect } from "react-use";
+import {
+  SnapshotProposalExtended,
+  SnapshotScore,
+  SnapshotVote,
+} from "../models/Snapshot";
 
 const getScores = ({
   space,
@@ -12,7 +17,7 @@ const getScores = ({
   space: string;
   tokenContractAddress: string;
   tokenSymbol: string;
-  votes: any[];
+  votes: SnapshotVote[];
   snapshotBlockNumber: string;
 }) => {
   //   const strategies = [
@@ -47,7 +52,7 @@ const getScores = ({
     },
   ];
   const network = "1";
-  const voters = votes.map((v: any) => v.voter);
+  const voters = votes.map((vote) => vote.voter);
 
   return snapshot.utils.getScores(
     space,
@@ -65,32 +70,35 @@ export default function useScores({
 }: {
   tokenContractAddress: string;
   tokenSymbol: string;
-  proposals?: any;
+  proposals?: SnapshotProposalExtended[];
 }) {
-  const [data, setData] = useState<string>();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState();
+  const [data, setData] = useState<{ [proposalId: string]: SnapshotScore }>();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error>();
 
   useDeepCompareEffect(() => {
-    if (proposals === undefined) return;
+    if (proposals === undefined) {
+      setData(undefined);
+      return;
+    }
 
     setLoading(true);
-
     Promise.all(
-      proposals.map((p: any) => {
+      proposals.map((proposal) => {
         return getScores({
-          space: p.space.name,
+          space: proposal.space.name,
           tokenContractAddress,
           tokenSymbol,
-          snapshotBlockNumber: p.snapshot,
-          votes: p.votes,
+          snapshotBlockNumber: proposal.snapshot,
+          votes: proposal.votes,
         });
       })
     )
-      .then((scores) => {
+      .then((scores: SnapshotScore[][]) => {
+        const flatScores = scores.flat();
         const scoresByProposal = proposals?.reduce(
-          (map: any, p: any, i: any) => {
-            map[p.id] = scores[i][0];
+          (map: { [proposalId: string]: SnapshotScore }, proposal, idx) => {
+            map[proposal.id] = flatScores[idx];
             return map;
           },
           {}
@@ -98,13 +106,13 @@ export default function useScores({
 
         setData(scoresByProposal);
       })
-      .catch((e) => {
+      .catch((e: Error) => {
         setError(e);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [proposals]);
+  }, [proposals ?? [], tokenContractAddress, tokenSymbol]);
 
   return { data, loading, error };
 }
