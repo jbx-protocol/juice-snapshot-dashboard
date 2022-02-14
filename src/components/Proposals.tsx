@@ -36,9 +36,10 @@ const getChartData = (
   }
 
   return proposals.map((proposal, idx) => {
-    const yesVotes = proposal.votes.filter((vote) => vote.choice === 1);
-    const noVotes = proposal.votes.filter((vote) => vote.choice === 2);
-    const abstainVotes = proposal.votes.filter((vote) => vote.choice === 3);
+    const yesVotes = proposal.votes?.filter((vote) => vote.choice === 1) ?? [];
+    const noVotes = proposal.votes?.filter((vote) => vote.choice === 2) ?? [];
+    const abstainVotes =
+      proposal.votes?.filter((vote) => vote.choice === 3) ?? [];
     const yesVoteTokenVolume = sumVoteTokenVolume(yesVotes, scores, proposal);
     const noVoteTokenVolume = sumVoteTokenVolume(noVotes, scores, proposal);
     const abstainVoteTokenVolume = sumVoteTokenVolume(
@@ -52,7 +53,7 @@ const getChartData = (
       titleShort: proposal.title.split(" - ")[0],
       title: proposal.title,
       id: proposal.id,
-      totalVoteCount: proposal.votes.length,
+      totalVoteCount: proposal.votes?.length ?? 0,
       yesVotes,
       noVotes,
       abstainVotes,
@@ -103,7 +104,9 @@ export default function Proposals({
   const loading = proposalsLoading || scoresLoading;
   const hasProposals = !loading && (proposals?.length ?? 0) > 0;
   const endTime = proposals?.[0]?.end;
+  const startTime = proposals?.[0]?.start;
   const isActive = proposals?.[0]?.state === "active";
+  const isPending = proposals?.[0]?.state === "pending";
 
   return (
     <div
@@ -158,7 +161,16 @@ export default function Proposals({
         <EmptyState governanceProcessLink={governanceProcessLink} />
       )}
       {!loading && hasProposals && endTime && isActive && (
-        <FundingCycleTimer endTime={endTime} />
+        <span>
+          Voting ends in
+          <FundingCycleTimer endTime={endTime} />
+        </span>
+      )}
+      {!loading && hasProposals && startTime && isPending && (
+        <span>
+          Voting starts in
+          <FundingCycleTimer endTime={startTime} />
+        </span>
       )}
       {!loading && hasProposals && (
         <div

@@ -22,7 +22,7 @@ export type SnapshotProposal = {
 };
 
 export type SnapshotProposalExtended = SnapshotProposal & {
-  votes: SnapshotVote[];
+  votes: SnapshotVote[] | undefined;
 };
 
 export type SnapshotScore = {

@@ -16,7 +16,7 @@ const formatTimer = (delta: number) => {
   const minutesText = `${minutes} ${minutes === 1 ? "minute" : "minutes"}`;
   const secondsText = `${seconds} ${seconds === 1 ? "second" : "seconds"}`;
 
-  return `${daysText}, ${hoursText}, ${minutesText}, ${secondsText} left to vote`;
+  return `${daysText}, ${hoursText}, ${minutesText}, ${secondsText}`;
 };
 
 export default function useCountdownTimer({ end }: { end?: number } = {}) {

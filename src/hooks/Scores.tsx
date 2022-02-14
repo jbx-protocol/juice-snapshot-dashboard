@@ -85,6 +85,8 @@ export default function useScores({
     setLoading(true);
     Promise.all(
       proposals.map((proposal) => {
+        if (!proposal.votes) return [];
+
         return getScores({
           space: proposal.space.name,
           tokenContractAddress,
