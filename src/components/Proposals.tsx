@@ -12,14 +12,16 @@ import {
   SnapshotVote,
 } from "../models/Snapshot";
 
+const proposalLabelRegex = /JBP(?:-|(?: - ))[0-9]+/;
+
 const sumVoteTokenVolume = (
   votes: SnapshotVote[],
   scores: { [proposalId: string]: SnapshotScore },
   proposal: SnapshotProposalExtended
 ) => {
   return votes.reduce((sum: number, vote) => {
-    const proposalScores = scores[proposal.id];
-    return sum + proposalScores[vote.voter];
+    const proposalScores = scores[proposal.id] ?? {};
+    return sum + (proposalScores[vote.voter] ?? 0);
   }, 0);
 };
 
@@ -50,7 +52,9 @@ const getChartData = (
 
     return {
       idx,
-      titleShort: proposal.title.split(" - ")[0],
+      titleShort:
+        proposal.title.match(proposalLabelRegex)?.[0].replace(/\s+/g, "") ||
+        proposal.title,
       title: proposal.title,
       id: proposal.id,
       totalVoteCount: proposal.votes?.length ?? 0,

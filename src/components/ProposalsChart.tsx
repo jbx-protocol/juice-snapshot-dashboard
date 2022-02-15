@@ -112,7 +112,9 @@ export default function ProposalsChart({
           bottom: 30,
         }}
         onClick={(e: any) => {
-          onClick?.(e.activeLabel);
+          if (!e?.activeLabel) return;
+
+          onClick?.(e?.activeLabel);
         }}
         style={{ cursor: "pointer" }}
       >
