@@ -24,7 +24,7 @@ export default function FundingCycleSelector({
   const { data: proposalGroups, loading } = useProposalGroups(space);
   const [val, setVal] = useState<SingleValue<OptionType>>();
   const [loaded, setLoaded] = useState<boolean>();
-  const proposalGroupDates = Object.keys(proposalGroups || [])
+  const proposalDateGroups = Object.keys(proposalGroups || [])
     .map((v) => parseInt(v, 10))
     .sort((a, b) => b - a); // sort descending order
 
@@ -36,7 +36,7 @@ export default function FundingCycleSelector({
     [onChange]
   );
 
-  const selectOptions = proposalGroupDates.map((d) => ({
+  const selectOptions = proposalDateGroups.map((d) => ({
     value: d,
     label: formatDateText(d),
   }));
@@ -59,7 +59,7 @@ export default function FundingCycleSelector({
     input: (styles) => ({ ...styles, borderRadius: 0 }),
   };
 
-  return proposalGroupDates ? (
+  return proposalDateGroups ? (
     <Select
       id={id}
       isLoading={loading}

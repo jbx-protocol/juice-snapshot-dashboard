@@ -64,6 +64,12 @@ export default function ProposalsChart({
   }) => {
     if (active && payload && payload.length) {
       const proposal = payload[0].payload;
+      const hasProposalPassed =
+        tokenVoteThresholdPercent &&
+        proposal.yesVoteTokenVolume /
+          (proposal.totalVoteTokenVolume - proposal.abstainVoteTokenVolume) <
+          tokenVoteThresholdPercent;
+
       return (
         <div className="custom-tooltip">
           <p className="label">{`${proposal.title}`}</p>
@@ -78,20 +84,17 @@ export default function ProposalsChart({
             </p>
           )}
 
-          {tokenVoteThresholdPercent &&
-            proposal.yesVoteTokenVolume / proposal.totalVoteTokenVolume <
-              tokenVoteThresholdPercent && (
-              <p style={{ color: "#FF6347" }}>
-                Proposal needs more than {tokenVoteThresholdPercent * 100}%
-                "Yes" votes (currently has{" "}
-                {Math.round(
-                  (proposal.yesVoteTokenVolume /
-                    proposal.totalVoteTokenVolume) *
-                    100
-                )}
-                %).
-              </p>
-            )}
+          {hasProposalPassed && (
+            <p style={{ color: "#FF6347" }}>
+              Proposal needs more than {tokenVoteThresholdPercent * 100}% "Yes"
+              votes (currently has{" "}
+              {Math.round(
+                (proposal.yesVoteTokenVolume / proposal.totalVoteTokenVolume) *
+                  100
+              )}
+              %).
+            </p>
+          )}
         </div>
       );
     }

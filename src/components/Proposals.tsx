@@ -95,6 +95,7 @@ export default function Proposals({
   const { data: proposals, loading: proposalsLoading } = useProposals({
     space,
     start,
+    end: start ? start + 86400 * 5 : undefined, // add 5 days for extra buffer
   });
 
   const { data: scores, loading: scoresLoading } = useScores({

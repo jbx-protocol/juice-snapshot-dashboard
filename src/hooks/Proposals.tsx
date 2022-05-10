@@ -14,11 +14,17 @@ const groupProposalsByDate = (
   proposals: SnapshotProposal[] | undefined
 ): ProposalsByDate | undefined => {
   return proposals?.reduce((acc: ProposalsByDate, proposal) => {
-    if (!acc[proposal.start]) {
-      acc[proposal.start] = [];
+    const date = new Date(proposal.start * 1000);
+    date.setSeconds(0);
+    date.setMinutes(0);
+    date.setHours(0);
+    const start = date.getTime() / 1000;
+    console.log(start);
+    if (!acc[start]) {
+      acc[start] = [];
     }
 
-    acc[proposal.start].push(proposal);
+    acc[start].push(proposal);
     return acc;
   }, {});
 };
@@ -37,10 +43,12 @@ export function useProposalGroups(space: string) {
 export function useProposals({
   space,
   start,
+  end,
   state,
 }: {
   space: string;
   start?: number;
+  end?: number;
   state?: string;
 }) {
   const {
@@ -49,7 +57,7 @@ export function useProposals({
     loading: proposalsLoading,
     networkStatus: proposalsNetworkStatus,
   } = useQuery<{ proposals: SnapshotProposal[] }>(getProposals, {
-    variables: { spaces: [space], start, state, first: PROPOSALS_LIMIT },
+    variables: { spaces: [space], start, end, state, first: PROPOSALS_LIMIT },
     skip: !Boolean(start),
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "no-cache",
