@@ -1,6 +1,6 @@
 {
   "name": "jbdao-snapshot-dash",
-  "homepage": "https://aeolianeth.github.io/snapshot-analytics",
+  "homepage": "https://jbx-protocol.github.io/juice-snapshot-dashboard",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
