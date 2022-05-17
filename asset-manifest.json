@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/juice-snapshot-dashboard/static/css/main.a962882f.css",
-    "main.js": "/juice-snapshot-dashboard/static/js/main.10f0f5a9.js",
+    "main.js": "/juice-snapshot-dashboard/static/js/main.a149473c.js",
     "static/js/787.1f6495fa.chunk.js": "/juice-snapshot-dashboard/static/js/787.1f6495fa.chunk.js",
     "static/media/blueberry.png": "/juice-snapshot-dashboard/static/media/blueberry.24206fc6213678d647b8.png",
     "index.html": "/juice-snapshot-dashboard/index.html",
     "main.a962882f.css.map": "/juice-snapshot-dashboard/static/css/main.a962882f.css.map",
-    "main.10f0f5a9.js.map": "/juice-snapshot-dashboard/static/js/main.10f0f5a9.js.map",
+    "main.a149473c.js.map": "/juice-snapshot-dashboard/static/js/main.a149473c.js.map",
     "787.1f6495fa.chunk.js.map": "/juice-snapshot-dashboard/static/js/787.1f6495fa.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.a962882f.css",
-    "static/js/main.10f0f5a9.js"
+    "static/js/main.a149473c.js"
   ]
 }
