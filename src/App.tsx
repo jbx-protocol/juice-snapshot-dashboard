@@ -17,7 +17,7 @@ function App() {
           tokenSymbol="JBX"
           tokenContractAddress="0xee2eBCcB7CDb34a8A822b589F9E8427C24351bfc"
           juiceboxLink="https://juicebox.money/#/p/juicebox"
-          governanceProcessLink="https://juicebox.notion.site/Governance-Process-ebfb9b0d7e8b41c1aa0cd26f8aab48fe"
+          governanceProcessLink="https://info.juicebox.money/docs/resources/juicebox-dao/governance-process"
           voteThreshold={15}
           tokenVoteThresholdPercent={0.66}
         />
