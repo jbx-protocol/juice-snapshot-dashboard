@@ -50,6 +50,33 @@ const getScores = ({
         },
       },
     },
+    {
+      name: "delegation",
+      params: {
+        symbol: tokenSymbol,
+        strategies: [
+          {
+            name: "contract-call",
+            params: {
+              args: ["%{address}", "0x01"],
+              symbol: tokenSymbol,
+              address: tokenContractAddress,
+              decimals: 18,
+              methodABI: {
+                name: "balanceOf",
+                type: "function",
+                inputs: [
+                  { name: "", type: "address", internalType: "address" },
+                  { name: "", type: "uint256", internalType: "uint256" },
+                ],
+                outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
+                stateMutability: "view",
+              },
+            },
+          },
+        ],
+      },
+    },
   ];
   const network = "1";
   const voters = votes.map((vote) => vote.voter);
