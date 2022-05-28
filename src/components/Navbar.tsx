@@ -13,7 +13,7 @@ export default function Navbar({
   governanceProcessLink?: string;
 }) {
   const navItems: NavItem[] = [
-    { text: "Snapshot", href: `https://snapshot.org/#/${space}` },
+    { text: "Snapshot", href: `https://vote.juicebox.money/#/${space}` },
     juiceboxLink ? { text: "Juicebox", href: juiceboxLink } : undefined,
     governanceProcessLink
       ? {
