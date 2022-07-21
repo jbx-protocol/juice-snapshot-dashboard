@@ -37,22 +37,23 @@ export type ChartData = ChartDataItem[];
 export default function ProposalsChart({
   tokenSymbol,
   chartData,
-  voteThreshold,
+  quorum,
   tokenVoteThresholdPercent,
   onClick,
 }: {
   tokenSymbol: string;
   chartData?: ChartData;
-  voteThreshold?: number;
+  quorum?: number;
   tokenVoteThresholdPercent?: number;
   onClick: (proposalName: string) => void;
 }) {
   if (!chartData) {
     return <div>Loading (may take up to 30 seconds)...</div>;
   }
+
   const voteAxisUpperLimit = Math.max(
     ...chartData.map((d) => d.totalVoteCount),
-    20
+    100000000
   );
 
   const CustomTooltip = ({
@@ -78,9 +79,9 @@ export default function ProposalsChart({
           } (${proposal.yesVotes.length} yes, ${proposal.noVotes.length} no, ${
             proposal.abstainVotes.length
           } abstain)`}</p>
-          {voteThreshold && proposal.totalVoteCount < voteThreshold && (
+          {quorum && proposal.totalVoteTokenVolume < quorum && (
             <p style={{ color: "#FF6347" }}>
-              Proposal needs at least {voteThreshold} votes.
+              Proposal needs at least {numeral(quorum).format("0,0a")} votes.
             </p>
           )}
 
@@ -134,6 +135,7 @@ export default function ProposalsChart({
           orientation="right"
           interval={0}
           domain={[0, voteAxisUpperLimit]}
+          tickFormatter={formatJBX}
         >
           <Label angle={90} position="right" style={{ textAnchor: "middle" }}>
             Votes
@@ -175,8 +177,8 @@ export default function ProposalsChart({
           fill="#574c67"
           barSize={5}
         />
-        {voteThreshold && (
-          <ReferenceLine yAxisId="right" y={voteThreshold} stroke="#574c67" />
+        {quorum && (
+          <ReferenceLine yAxisId="right" y={quorum} stroke="#574c67" />
         )}
       </BarChart>
     </ResponsiveContainer>

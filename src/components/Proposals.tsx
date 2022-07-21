@@ -75,7 +75,7 @@ export default function Proposals({
   space,
   tokenContractAddress,
   tokenSymbol,
-  voteThreshold,
+  quorum,
   tokenVoteThresholdPercent,
   juiceboxLink,
   governanceProcessLink,
@@ -84,7 +84,7 @@ export default function Proposals({
   space: string;
   tokenContractAddress: string;
   tokenSymbol: string;
-  voteThreshold?: number;
+  quorum?: number;
   tokenVoteThresholdPercent?: number;
   juiceboxLink?: string;
   governanceProcessLink?: string;
@@ -194,7 +194,7 @@ export default function Proposals({
           >
             <ProposalsChart
               chartData={chartData}
-              voteThreshold={voteThreshold}
+              quorum={quorum}
               tokenVoteThresholdPercent={tokenVoteThresholdPercent}
               tokenSymbol={tokenSymbol}
               onClick={(proposalName) => {
